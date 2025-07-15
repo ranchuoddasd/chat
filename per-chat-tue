@@ -1,0 +1,80 @@
+# main.py
+from fastapi import FastAPI, Query
+from typing import Optional, Dict, Any
+import httpx
+
+app = FastAPI(title="Robusta Internal Network Search Engine")
+
+# --- Helper functions for each tool ---
+async def query_hpna(ip: str) -> Dict[str, Any]:
+    # Replace with actual HPNA API endpoint and authentication
+    url = f"https://hpna.example.com/api/devices?ip={ip}"
+    headers = {"Authorization": "Bearer YOUR_HPNA_TOKEN"}
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url, headers=headers)
+    return {"hpna": resp.json()}
+
+async def query_forward_networks(ip: str) -> Dict[str, Any]:
+    url = f"https://forwardnetworks.example.com/api/paths?ip={ip}"
+    headers = {"Authorization": "Bearer YOUR_FORWARD_TOKEN"}
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url, headers=headers)
+    return {"forward_networks": resp.json()}
+
+async def query_splunk(ip: str, log_type: str) -> Dict[str, Any]:
+    url = f"https://splunk.example.com/api/search"
+    headers = {"Authorization": "Bearer YOUR_SPLUNK_TOKEN"}
+    params = {"query": f"search {log_type} where ip={ip}"}
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url, headers=headers, params=params)
+    return {f"splunk_{log_type}": resp.json()}
+
+async def query_expedite(ip: str) -> Dict[str, Any]:
+    url = f"https://expedite.example.com/api/circuits?ip={ip}"
+    headers = {"Authorization": "Bearer YOUR_EXPEDITE_TOKEN"}
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url, headers=headers)
+    return {"expedite": resp.json()}
+
+async def query_circuit_info(ip: str) -> Dict[str, Any]:
+    url = f"https://circuitinfo.example.com/api/info?ip={ip}"
+    headers = {"Authorization": "Bearer YOUR_CIRCUITINFO_TOKEN"}
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url, headers=headers)
+    return {"circuit_info": resp.json()}
+
+async def query_thousand_eyes(ip: str) -> Dict[str, Any]:
+    url = f"https://api.thousandeyes.com/v6/tests?ip={ip}"
+    headers = {"Authorization": "Bearer YOUR_TE_TOKEN"}
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url, headers=headers)
+    return {"thousand_eyes": resp.json()}
+
+# --- Main search endpoint ---
+@app.get("/search", summary="Unified search across network tools")
+async def internal_search(
+    ip: Optional[str] = Query(None, description="IP address to search"),
+    src: Optional[str] = Query(None, description="Source IP"),
+    dst: Optional[str] = Query(None, description="Destination IP")
+):
+    """
+    Query all integrated network tools using the given IP or source/destination pair.
+    Returns a unified JSON response with results from each tool.
+    """
+    results = {}
+
+    # Use IP if provided, else use src/dst for path-based tools
+    query_ip = ip or src or dst
+    if not query_ip:
+        return {"error": "Please provide an 'ip', or both 'src' and 'dst'."}
+
+    # Query each tool concurrently
+    results.update(await query_hpna(query_ip))
+    results.update(await query_forward_networks(query_ip))
+    results.update(await query_splunk(query_ip, "firewall"))
+    results.update(await query_splunk(query_ip, "router"))
+    results.update(await query_expedite(query_ip))
+    results.update(await query_circuit_info(query_ip))
+    results.update(await query_thousand_eyes(query_ip))
+
+    return results
