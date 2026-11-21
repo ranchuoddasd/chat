@@ -3,7 +3,7 @@ from fastapi import FastAPI, Query
 from typing import Optional, Dict, Any
 import httpx
 
-app = FastAPI(title="Robusta Internal Network Search Engine")
+app = FastAPI(title="Network Search API Prototype")
 
 # --- Helper functions for each tool ---
 async def query_hpna(ip: str) -> Dict[str, Any]:
