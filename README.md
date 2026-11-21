@@ -24,6 +24,30 @@ See [Prototype Catalog](docs/prototype-catalog.md) for the existing variants and
 
 The current repository contains different experiments and partial implementations. They are not connected into one runnable application.
 
+## Repository structure
+
+```text
+chat/
+├── README.md
+├── docs/
+│   ├── multi-source-ip-search-design.md
+│   ├── prototype-catalog.md
+│   └── security-review.md
+├── examples/
+│   └── developer_console.html
+└── src/
+    ├── adapters/async_search.py
+    ├── api/fastapi_app.py
+    ├── intent_parser.py
+    └── ui/
+        ├── chat_interface.jsx
+        ├── configurable_query_assistant.jsx
+        ├── security_query_assistant.jsx
+        └── streamlit_app.py
+```
+
+These files are independent experiments, not a unified installable package. Their dependencies and setup steps differ.
+
 ## Security review
 See [Security Review](docs/security-review.md) for a static review of credential handling, query construction, browser rendering, CORS, and adapter limitations. No live integrations or runtime tests were performed.
 
