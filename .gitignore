@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Logs and local outputs
+*.log
+logs/
+output/
+tmp/
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
