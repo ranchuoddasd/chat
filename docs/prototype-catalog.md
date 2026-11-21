@@ -20,3 +20,7 @@ This catalog describes the existing experiments without assuming they are duplic
 - `Per-chat` and `per-chat-tue` are backend sketches with different levels of integration.
 - `deep-chat` is a developer presentation experiment.
 - No file has been removed based only on names or high-level similarity. Perform a line-level and behavior-level comparison before consolidating.
+
+
+## Security notes
+See [Security Review](security-review.md) for file-by-file risks and controls. The current implementations are design sketches, not approved live integrations. In particular, do not enter real credentials into browser-side configuration panels, and do not expose operational network data in this public repository.
