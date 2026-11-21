@@ -24,6 +24,9 @@ See [Prototype Catalog](docs/prototype-catalog.md) for the existing variants and
 
 The current repository contains different experiments and partial implementations. They are not connected into one runnable application.
 
+## Security review
+See [Security Review](docs/security-review.md) for a static review of credential handling, query construction, browser rendering, CORS, and adapter limitations. No live integrations or runtime tests were performed.
+
 ## Safety and configuration
 - Use synthetic IP addresses, log events, and API responses in examples.
 - Never commit credentials, API tokens, internal endpoints, private topology, customer data, or organization-specific details.
